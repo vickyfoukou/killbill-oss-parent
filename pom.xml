@@ -102,9 +102,9 @@
         <killbill-base-plugin.version>3.0.0</killbill-base-plugin.version>
         <killbill-client.version>1.0.6</killbill-client.version>
         <!-- This should point to the latest non-SNAPSHOT version of commons -->
-        <killbill-commons-for-tests.version>0.22.1</killbill-commons-for-tests.version>
-        <killbill-commons.version>0.22.1</killbill-commons.version>
-        <killbill-platform.version>0.38.2</killbill-platform.version>
+        <killbill-commons-for-tests.version>0.22.2-SNAPSHOT</killbill-commons-for-tests.version>
+        <killbill-commons.version>0.22.2-SNAPSHOT</killbill-commons.version>
+        <killbill-platform.version>0.38.3-SNAPSHOT</killbill-platform.version>
         <killbill-plugin-api.version>0.25.0</killbill-plugin-api.version>
         <logback.version>1.2.3</logback.version>
         <metrics-palominolabs.version>3.2.1</metrics-palominolabs.version>
@@ -1212,6 +1212,11 @@
             </dependency>
             <dependency>
                 <groupId>org.kill-bill.commons</groupId>
+                <artifactId>killbill-embeddeddb-spanner</artifactId>
+                <version>${killbill-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kill-bill.commons</groupId>
                 <artifactId>killbill-jdbi</artifactId>
                 <version>${killbill-commons.version}</version>
             </dependency>
@@ -2032,6 +2037,31 @@
                 <dependency>
                     <groupId>org.kill-bill.commons</groupId>
                     <artifactId>killbill-embeddeddb-postgresql</artifactId>
+                    <version>${killbill-commons-for-tests.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>integration-spanner</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>fast,slow,spanner,integration</groups>
+                            <systemPropertyVariables>
+                                <org.killbill.billing.dbi.test.spanner>true</org.killbill.billing.dbi.test.spanner>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.kill-bill.commons</groupId>
+                    <artifactId>killbill-embeddeddb-spanner</artifactId>
                     <version>${killbill-commons-for-tests.version}</version>
                     <scope>test</scope>
                 </dependency>
