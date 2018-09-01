@@ -447,6 +447,11 @@
                 <version>${swagger.version}</version>
             </dependency>
             <dependency>
+                <groupId>it.ozimov</groupId>
+                <artifactId>embedded-redis</artifactId>
+                <version>0.7.2</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.cache</groupId>
                 <artifactId>cache-api</artifactId>
                 <version>1.0.0</version>
