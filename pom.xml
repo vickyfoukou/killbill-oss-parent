@@ -97,10 +97,11 @@
         <killbill-base-plugin.version>4.0.3</killbill-base-plugin.version>
         <killbill-client.version>1.1.9</killbill-client.version>
         <!-- This should point to the latest non-SNAPSHOT version of commons -->
-        <killbill-commons-for-tests.version>0.23.8</killbill-commons-for-tests.version>
+        <killbill-commons-for-tests.version>0.23.8-SNAPSHOT</killbill-commons-for-tests.version>
         <killbill-commons.version>0.23.8</killbill-commons.version>
         <killbill-platform.version>0.39.13</killbill-platform.version>
         <killbill-plugin-api.version>0.26.4</killbill-plugin-api.version>
+        <killbill.version>0.23.8</killbill.version>
         <logback.version>1.2.3</logback.version>
         <metrics-palominolabs.version>3.2.2</metrics-palominolabs.version>
         <metrics.version>3.2.3</metrics.version>
@@ -252,6 +253,16 @@
                 <groupId>com.mchange</groupId>
                 <artifactId>c3p0</artifactId>
                 <version>0.9.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>mssql-jdbc</artifactId>
+                <version>8.2.1.jre11</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>sqljdbc42</artifactId>
+                <version>4.2</version>
             </dependency>
             <dependency>
                 <groupId>com.ning</groupId>
@@ -1263,6 +1274,18 @@
                 <version>${killbill-commons.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.kill-bill.commons</groupId>
+                <artifactId>mssql</artifactId>
+                <version>${killbill-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kill-bill.commons</groupId>
+                <artifactId>mssql</artifactId>
+                <version>${killbill-commons.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.mariadb.jdbc</groupId>
                 <artifactId>mariadb-java-client</artifactId>
                 <version>1.7.4</version>
@@ -1788,7 +1811,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
+                <version>3.2.0</version>
                 <reportSets>
                     <reportSet>
                         <id>html</id>
@@ -1960,6 +1983,31 @@
             </dependencies>
         </profile>
         <profile>
+            <id>mssql</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>fast,slow,mssql</groups>
+                            <systemPropertyVariables>
+                                <org.killbill.billing.dbi.test.mssql>true</org.killbill.billing.dbi.test.mssql>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.kill-bill.commons</groupId>
+                    <artifactId>mssql</artifactId>
+                    <version>${killbill-commons-for-tests.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>localtest-mysql</id>
             <build>
                 <plugins>
@@ -1988,6 +2036,24 @@
                             <groups>fast,slow,postgresql</groups>
                             <systemPropertyVariables>
                                 <org.killbill.billing.dbi.test.postgresql>true</org.killbill.billing.dbi.test.postgresql>
+                                <org.killbill.billing.dbi.test.useLocalDb>true</org.killbill.billing.dbi.test.useLocalDb>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>localtest-mssql</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>fast,slow,mssql</groups>
+                            <systemPropertyVariables>
+                                <org.killbill.billing.dbi.test.mssql>true</org.killbill.billing.dbi.test.mssql>
                                 <org.killbill.billing.dbi.test.useLocalDb>true</org.killbill.billing.dbi.test.useLocalDb>
                             </systemPropertyVariables>
                         </configuration>
@@ -2065,6 +2131,31 @@
                 <dependency>
                     <groupId>org.kill-bill.commons</groupId>
                     <artifactId>killbill-embeddeddb-postgresql</artifactId>
+                    <version>${killbill-commons-for-tests.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>integration-mssql</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>fast,slow,mssql,integration</groups>
+                            <systemPropertyVariables>
+                                <org.killbill.billing.dbi.test.mssql>true</org.killbill.billing.dbi.test.mssql>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.kill-bill.commons</groupId>
+                    <artifactId>mssql</artifactId>
                     <version>${killbill-commons-for-tests.version}</version>
                     <scope>test</scope>
                 </dependency>
